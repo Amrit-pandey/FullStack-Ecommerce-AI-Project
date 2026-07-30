@@ -17,10 +17,12 @@ class User(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    full_name: Mapped[str] = mapped_column(String(50), nullable=True)
+    full_name: Mapped[str | None] = mapped_column(String(50), nullable=True)
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     role: Mapped[UserRole] = mapped_column(
-        SQLEnum(UserRole), default=UserRole.USER, nullable=False
+        SQLEnum(UserRole, values_callable=lambda obj: [e.value for e in obj]),
+        default=UserRole.USER,
+        nullable=False,
     )
     image_file: Mapped[str | None] = mapped_column(
         String(200), nullable=True, default=None
