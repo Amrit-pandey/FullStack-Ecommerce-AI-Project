@@ -1,17 +1,17 @@
-import os
-
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./test.db")
+from app.core.config import settings
+
+DATABASE_URL = settings.database_url
 
 connect_args = {}
 
-if SQLALCHEMY_DATABASE_URL.startswith("sqlite"):
+if DATABASE_URL.startswith("sqlite"):
     connect_args["check_same_thread"] = False
 
 engine = create_async_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args=connect_args, echo=False
+    DATABASE_URL, connect_args=connect_args, echo=False
 )
 
 AsyncSessionLocal = async_sessionmaker(

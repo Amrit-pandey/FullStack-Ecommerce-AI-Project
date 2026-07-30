@@ -6,11 +6,12 @@ services:
       - "8000:8000"
     volumes:
       - .:/app
-    environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+      - /app/.venv
+    env_file:
+      - .env
     depends_on:
       - redis
+      - db
 
   # 2. Redis Caching Service
   redis:
@@ -18,3 +19,21 @@ services:
     container_name: redis-fastapi
     ports:
       - "6379:6379"
+
+  # 3. postgres db
+  db:
+    image: postgres:17-alpine
+    container_name: postgres-fastapi
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ShopOnBot_db
+
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
