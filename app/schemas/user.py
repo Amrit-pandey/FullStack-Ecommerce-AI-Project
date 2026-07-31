@@ -7,7 +7,7 @@ from app.models.user import UserRole
 
 class OnboardingRequest(BaseModel):
     full_name: str = Field(min_length=2, max_length=100)
-    image_file: str | None = None
+    image_url: str | None = None
 
 
 class UserPublic(BaseModel):
@@ -17,6 +17,6 @@ class UserPublic(BaseModel):
     full_name: str | None
     email: EmailStr
     role: UserRole
-    image_path: str
+    image_url: str | None
     is_active: bool
     created_at: datetime

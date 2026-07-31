@@ -24,7 +24,7 @@ class User(Base):
         default=UserRole.USER,
         nullable=False,
     )
-    image_file: Mapped[str | None] = mapped_column(
+    image_url: Mapped[str | None] = mapped_column(
         String(200), nullable=True, default=None
     )
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
@@ -41,10 +41,10 @@ class User(Base):
     )
 
     @property
-    def image_path(self) -> str:
-        if self.image_file:
-            return f"/media/profile_pics/{self.image_file}"
-        return "/static/profile_pics/default.jpg"
+    def image_path(self) -> str | None:
+        if not self.image_file:
+            return None
+        return f"/media/profile_pics/{self.image_file}"
 
     def __repr__(self) -> str:
         return f"<User id={self.id} email={self.email} role={self.role}>"

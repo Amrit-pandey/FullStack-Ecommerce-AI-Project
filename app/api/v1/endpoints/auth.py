@@ -15,7 +15,6 @@ from app.core.security import create_access_token, create_refresh_token, verify_
 from app.db.database import get_db
 from app.models.user import User
 from app.schemas.auth import LoginResponse, OTPRequest, OTPVerify
-from app.schemas.user import UserPublic
 from app.services.email_service import send_otp_email
 
 router = APIRouter()
@@ -53,6 +52,7 @@ async def verify_otp(
     otp = payload.otp
 
     is_valid = await verify_and_delete_otp(email=email, input_code=otp)
+    logger.info("is_valid: %s", is_valid)
 
     if not is_valid:
         raise HTTPException(
@@ -100,11 +100,6 @@ async def verify_otp(
         max_age=settings.refresh_token_expire_days * 24 * 60 * 60,
     )
     return LoginResponse(is_new_user=is_new_user, user=user)
-
-
-@router.get("/me", response_model=UserPublic, status_code=status.HTTP_200_OK)
-async def get_current_user(current_user: CurrentUser):
-    return current_user
 
 
 @router.post("/refresh", status_code=status.HTTP_200_OK)
