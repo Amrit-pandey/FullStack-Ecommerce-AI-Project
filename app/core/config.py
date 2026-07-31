@@ -11,9 +11,9 @@ class Settings(BaseSettings):
 
     # _JWT
     secret_key: SecretStr
-    algorithm: str = "HS256"
-    access_token_expire_minutes: int = 5
-    refresh_token_expire_days: int = 7
+    algorithm: str
+    access_token_expire_minutes: int
+    refresh_token_expire_days: int
 
     # _Database
     database_url: str
