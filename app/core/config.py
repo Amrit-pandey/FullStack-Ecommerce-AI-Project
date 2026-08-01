@@ -25,6 +25,12 @@ class Settings(BaseSettings):
     # _Resend
     resend_api_key: SecretStr
 
+    # _AWS
+    aws_access_key_id: SecretStr | None = None
+    aws_secret_access_key: SecretStr | None = None
+    aws_region: str
+    aws_s3_bucket_name: str
+
 
 
 settings = Settings()
