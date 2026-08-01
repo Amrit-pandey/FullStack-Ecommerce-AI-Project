@@ -7,7 +7,6 @@ from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import CurrentUser
 from app.core.config import settings
 from app.core.cookies import set_auth_cookie
 from app.core.redis import check_and_set_cooldown, set_otp, verify_and_delete_otp
@@ -108,11 +107,13 @@ async def refresh_token(
 ):
     refresh_cookie = request.cookies.get("refresh_token")
 
+    # for 7 days
     if not refresh_cookie:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token"
         )
 
+    # get user_id from token as sub
     user_id = verify_token(token=refresh_cookie, expected_type="refresh")
 
     if user_id is None:

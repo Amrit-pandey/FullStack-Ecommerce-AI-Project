@@ -26,16 +26,24 @@ bucket_name = settings.aws_s3_bucket_name
 async def upload_to_s3(file: UploadFile, user_id: int) -> str:
     try:
         filename = file.filename
+        if not filename:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="filename is missing"
+            )
         # Generate unique filename
         # Extract and normalize the suffix (makes it ".png")
         extension = Path(filename).suffix.lower()
         # Generate the random string like "c2b0d5b8-f5aa-49f7-a52d-3f0cf2fef8c6.png" to avoid path collision in s3
-        filename = f"{uuid.uuid4()}: {extension}"
+        filename = f"{uuid.uuid4()}{extension}"
         logger.info("s3 filename: %s", filename)
 
         ALLOWED_EXTENTIONS = {".jpg", ".jpeg", ".png", ".webp"}
         if extension not in ALLOWED_EXTENTIONS:
-            raise ValueError("Invalid file format, Only Images are allowed")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Only JPG, JPEG, PNG and WEBP images are allowed."
+            )
 
         # s3_object_key, it will save in db like users/1/c2b0d5b8-f5aa-49f7-a52d-3f0cf2fef8c6.png
         object_key = f"users/{user_id}/{filename}"
@@ -56,12 +64,34 @@ async def upload_to_s3(file: UploadFile, user_id: int) -> str:
             file.file,
             bucket_name,
             object_key,
-            Extra_args={
+            ExtraArgs={
                 "ContentType": content_type
             },
         )
+        return object_key
     except ClientError:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to upload image",
+        )
+
+# This function generate full s3 url from backend because this url is saved as path like users/1/hdsbchd.png that's not valid for frontend to use
+def generate_signed_url(object_key: str | None) -> str | None:
+    try:
+        if not object_key:
+            return None
+        
+        return s3_client.generate_presigned_url(
+            ClientMethod="get_object",
+            Params={
+                "Bucket": bucket_name,
+                "Key": object_key,
+            },
+            ExpiresIn=3600,
+        )
+
+    except ClientError:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to generate image URL",
         )
