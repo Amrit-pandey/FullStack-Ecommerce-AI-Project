@@ -25,7 +25,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
     return encoded_jwt
 
 def create_refresh_token(data: dict, expires_delta: timedelta | None = None) -> str:
-    """Create a JWT access token."""
+    """Create a JWT refresh token."""
     to_encode = data.copy()
     now = datetime.now(UTC)
     if expires_delta:

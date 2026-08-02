@@ -25,6 +25,7 @@ logger = logging.getLogger("uvicorn.error")
 async def request_otp(payload: OTPRequest):
     email = payload.email.lower()
 
+    # protect from spammers (later will implement more security like fetch users current IP address using Nginx)
     allowed = await check_and_set_cooldown(email, seconds=60)
     if not allowed:
         raise HTTPException(
@@ -34,8 +35,10 @@ async def request_otp(payload: OTPRequest):
 
     generate_otp = f"{secrets.randbelow(1000000):06d}"
 
+    # Temporary set this OTP to redis with 5 minutes of expiration time  because we no lone needed this otp like setting it to database.
     await set_otp(email, code=generate_otp)
 
+    # send OTP to mail (using Resend)
     await send_otp_email(email, otp_code=generate_otp)
 
     return {"message": "OTP sent successfully to your email"}
@@ -50,6 +53,7 @@ async def verify_otp(
     email = payload.email.lower()
     otp = payload.otp
 
+    # Check OTP have already expired or not
     is_valid = await verify_and_delete_otp(email=email, input_code=otp)
     logger.info("is_valid: %s", is_valid)
 
@@ -78,6 +82,7 @@ async def verify_otp(
     await db.commit()
     await db.refresh(user)
 
+    # Create access and refresh token and set it to HttpOnly cookie for security and industry purpose
     access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
     refresh_token_expires = timedelta(days=settings.refresh_token_expire_days)
     access_token = create_access_token(
@@ -144,6 +149,7 @@ async def refresh_token(
             detail="Inactive or suspended user account",
         )
 
+    # Regenrate the access token based on the refresh token because access token expires in 30 minutes and users will not need to login  again and again after every 30 minutes 
     access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
     access_token = create_access_token(
         data={"sub": str(user.id)}, expires_delta=access_token_expires

@@ -58,7 +58,7 @@ async def upload_to_s3(file: UploadFile, user_id: int) -> str:
 
         content_type = CONTENT_TYPE_MAPPING.get(extension, "binary/octet-stream")
 
-        # upload to s3, because boto3 runs synchronously and block the async event loop, that's why use run_in_threaspool for async endpoints
+        # upload to s3, because boto3 runs synchronously and block the async event loop, that's why use run_in_threaspool for async endpoints and if will not use then boto3 blocks the execution thread
         await run_in_threadpool(
             s3_client.upload_fileobj,
             file.file,
@@ -68,6 +68,7 @@ async def upload_to_s3(file: UploadFile, user_id: int) -> str:
                 "ContentType": content_type
             },
         )
+        # now we only return an object_key(relative path) to get full path will manage by signed url function
         return object_key
     except ClientError:
         raise HTTPException(
@@ -76,6 +77,7 @@ async def upload_to_s3(file: UploadFile, user_id: int) -> str:
         )
 
 # This function generate full s3 url from backend because this url is saved as path like users/1/hdsbchd.png that's not valid for frontend to use
+# how it generate full path: because boto3 knows all the access credentials like your aws region, secretkey, accesskey, bucketname and object_key also, and combined all together and generate this full url
 def generate_signed_url(object_key: str | None) -> str | None:
     try:
         if not object_key:
