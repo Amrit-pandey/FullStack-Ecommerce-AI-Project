@@ -19,7 +19,7 @@ async def verify_and_delete_otp(email: str, input_code: str) -> bool:
     """Verifies the OTP and deletes it immediately if valid (one-time use)."""
 
     key = f"otp:{email}"
-    stored_code = await redis_client.getdel(name=key)
+    stored_code = await redis_client.get(name=key)
 
     if stored_code is None:
         return False
