@@ -5,13 +5,8 @@ from app.core.config import settings
 
 DATABASE_URL = settings.database_url
 
-connect_args = {}
-
-if DATABASE_URL.startswith("sqlite"):
-    connect_args["check_same_thread"] = False
-
 engine = create_async_engine(
-    DATABASE_URL, connect_args=connect_args, echo=False
+    DATABASE_URL, echo=False
 )
 
 AsyncSessionLocal = async_sessionmaker(

@@ -31,6 +31,9 @@ class Settings(BaseSettings):
     aws_region: str
     aws_s3_bucket_name: str
 
+    # _RabbitMQ
+    rabbit_mq_url = str
+
 
 
 settings = Settings()

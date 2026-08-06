@@ -5,6 +5,7 @@ description = "This is the Full Stack E-commerce AI platform"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "aio-pika>=10.0.1",
     "aiosqlite>=0.22.1",
     "alembic>=1.18.5",
     "asyncpg>=0.31.0",
