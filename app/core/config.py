@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     aws_s3_bucket_name: str
 
     # _RabbitMQ
-    rabbit_mq_url = str
+    rabbit_mq_url: str
 
 
 

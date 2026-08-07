@@ -163,3 +163,6 @@ docker compose exec db psql -U postgres -d ShopOnBot_db
 
 # Redis shell
 docker compose exec redis sh
+
+# Check which layer is came from cached or rebuild
+docker compose build --progress=plain

@@ -12,9 +12,9 @@ from app.core.cookies import set_auth_cookie
 from app.core.redis import check_and_set_cooldown, set_otp, verify_and_delete_otp
 from app.core.security import create_access_token, create_refresh_token, verify_token
 from app.db.database import get_db
+from app.messaging.publisher import publish_email_task
 from app.models.user import User
 from app.schemas.auth import LoginResponse, OTPRequest, OTPVerify
-from app.services.email_service import send_otp_email
 
 router = APIRouter()
 
@@ -38,8 +38,8 @@ async def request_otp(payload: OTPRequest):
     # Temporary set this OTP to redis with 5 minutes of expiration time  because we no lone needed this otp like setting it to database.
     await set_otp(email, code=generate_otp)
 
-    # send OTP to mail (using Resend)
-    await send_otp_email(email, otp_code=generate_otp)
+    # send OTP to mail (using Resend) -> used previouly, now it has been moved inside email_worker(rabbitmq)
+    await publish_email_task(email=email, otp=generate_otp)
 
     return {"message": "OTP sent successfully to your email"}
 

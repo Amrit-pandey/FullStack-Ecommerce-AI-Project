@@ -52,5 +52,21 @@ services:
       timeout: 5s
       retries: 5
 
+  # RabbitMQ email worker
+  worker:
+    build: .
+    container_name: email_worker
+    command: >
+      uv run python -m app.workers.email_worker
+    volumes:
+      - .:/app
+      - /app/.venv
+    env_file:
+      - .env
+    restart: unless-stopped
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
 volumes:
   postgres_data:
