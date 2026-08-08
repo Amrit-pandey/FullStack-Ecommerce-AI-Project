@@ -14,40 +14,6 @@ services:
       - db
       - rabbitmq
 
-  # Temprory creates a containers to understand how Nginx (Load Balancing) works, Later we move on docker swarm Or Kubernetes replicas:
-  web1:
-    build: .
-    container_name: fastapi_app_1
-    expose:
-      - "8000"
-    volumes:
-      - .:/app
-      - /app/.venv
-    env_file:
-      - .env
-
-  web2:
-    build: .
-    container_name: fastapi_app_2
-    expose:
-      - "8000"
-    volumes:
-      - .:/app
-      - /app/.venv
-    env_file:
-      - .env
-
-  web3:
-    build: .
-    container_name: fastapi_app_3
-    expose:
-      - "8000"
-    volumes:
-      - .:/app
-      - /app/.venv
-    env_file:
-      - .env
-
   # Nginx service
   ngnix:
     image: nginx:latest
