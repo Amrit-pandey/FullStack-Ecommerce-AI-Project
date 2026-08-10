@@ -30,7 +30,7 @@ async def verify_and_delete_otp(email: str, input_code: str) -> bool:
 
     return False
 
-async def check_and_set_cooldown(email: str, seconds:int = 60) -> bool:
+async def check_and_set_cooldown(email: str, seconds:int = 30) -> bool:
     """
     Checks if a cooldown key exists. 
     If not, sets it for `seconds` and returns True (allowed).

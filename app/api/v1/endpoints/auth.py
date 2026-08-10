@@ -26,11 +26,11 @@ async def request_otp(payload: OTPRequest):
     email = payload.email.lower()
 
     # protect from spammers (later will implement more security like fetch users current IP address using Nginx)
-    allowed = await check_and_set_cooldown(email, seconds=60)
+    allowed = await check_and_set_cooldown(email, seconds=30)
     if not allowed:
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            detail="Please wait 60 seconds before requesting another OTP.",
+            detail="Please wait 30 seconds before requesting another OTP.",
         )
 
     generate_otp = f"{secrets.randbelow(1000000):06d}"
