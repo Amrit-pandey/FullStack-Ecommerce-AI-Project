@@ -28,6 +28,7 @@ class User(Base):
         String(200), nullable=True, default=None
     )
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    onboarding_status: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     last_login: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
     )

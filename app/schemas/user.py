@@ -20,3 +20,4 @@ class UserPublic(BaseModel):
     image_url: str | None
     is_active: bool
     created_at: datetime
+    onboarding_status: bool

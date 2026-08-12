@@ -91,7 +91,9 @@ phone = mapped_column(...)
 Generate migration.
 
 ```bash
-uv run alembic revision --autogenerate -m "add phone column"
+uv run alembic revision --autogenerate -m "add phone column",
+# if using docker, after -it (contaier name)
+docker exec -it fastapi_app uv run alembic revision --autogenerate -m "add onboarding_status column in users table"
 ```
 
 ---

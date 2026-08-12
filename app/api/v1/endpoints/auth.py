@@ -68,7 +68,7 @@ async def verify_otp(
     is_new_user = False
 
     if not user:
-        user = User(email=email, is_active=True)
+        user = User(email=email, is_active=True, onboarding_status=False)
         db.add(user)
         is_new_user = True
 
