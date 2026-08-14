@@ -34,6 +34,7 @@ class Settings(BaseSettings):
     # _RabbitMQ
     rabbit_mq_url: str
 
-
+    # _Admin_email
+    admin_email: str
 
 settings = Settings()

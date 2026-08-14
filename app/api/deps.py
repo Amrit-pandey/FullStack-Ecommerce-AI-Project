@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import verify_token
 from app.db.database import get_db
-from app.models.user import User
+from app.models.user import User, UserRole
 
 
 async def get_current_user(
@@ -54,3 +54,12 @@ async def get_current_user(
     return user
 
 CurrentUser = Annotated[User, Depends(get_current_user)]
+
+async def require_admin(current_user: CurrentUser):
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You are not authorized to this role"
+        )
+
+    return current_user
