@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import CurrentUser
 from app.db.database import get_db
-from app.schemas.user import OnboardingRequest, UserPublic
+from app.schemas.user import OnboardingMessageResponse, OnboardingRequest, UserPublic
 from app.services.aws_service import generate_signed_url
 
 router = APIRouter()
@@ -21,7 +21,7 @@ async def get_current_user(current_user: CurrentUser):
 
 
 @router.post(
-    "/onboarding", response_model=OnboardingRequest, status_code=status.HTTP_201_CREATED
+    "/onboarding", response_model=OnboardingMessageResponse, status_code=status.HTTP_201_CREATED
 )
 async def onboarding(
     payload: OnboardingRequest,

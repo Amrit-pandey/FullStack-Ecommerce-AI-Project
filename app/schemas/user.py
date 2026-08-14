@@ -9,6 +9,8 @@ class OnboardingRequest(BaseModel):
     full_name: str = Field(min_length=2, max_length=100)
     image_url: str | None = None
 
+class OnboardingMessageResponse(BaseModel):
+    message: str
 
 class UserPublic(BaseModel):
     model_config = ConfigDict(from_attributes=True)
