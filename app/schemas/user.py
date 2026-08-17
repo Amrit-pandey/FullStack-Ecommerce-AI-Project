@@ -23,3 +23,10 @@ class UserPublic(BaseModel):
     is_active: bool
     created_at: datetime
     onboarding_status: bool
+
+
+class UserResponse(BaseModel):
+    users: list[UserPublic]
+    page: int
+    limit: int
+    total_count: int
