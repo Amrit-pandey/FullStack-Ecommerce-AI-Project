@@ -17,10 +17,25 @@ async def upload_profile_image(
     file: UploadFile = File(...),
 ):
 
-    object_key = await upload_to_s3(file=file, user_id=current_user.id)
+    object_key = await upload_to_s3(file=file, object_prefix=f"users/{current_user.id}")
 
     current_user.image_url = object_key
 
     await db.commit()
     await db.refresh(current_user)
     return {"message": "Profile image uploaded successfully"}
+
+
+@router.post("/product-image", status_code=status.HTTP_200_OK)
+async def upload_product_image(
+    file: UploadFile = File(...)
+):
+    object_key = await upload_to_s3(
+        file=file,
+        object_prefix="products"
+    )
+
+    return {
+        "message": "Product image uploaded successfully",
+        "image_url": object_key
+    }

@@ -115,6 +115,8 @@ async def create_product(payload: AdminProductCreateRequest, db: Annotated[Async
             stock_quantity= payload.stock_quantity
         )
         db.add(product)
+        await db.flush()
+        await db.refresh(product)
         response = AdminProductCreateResponse(
             message= "Product created successfully",
             product= product

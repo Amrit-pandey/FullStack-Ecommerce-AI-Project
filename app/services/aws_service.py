@@ -23,7 +23,7 @@ s3_client = _create_s3_client()
 bucket_name = settings.aws_s3_bucket_name
 
 
-async def upload_to_s3(file: UploadFile, user_id: int) -> str:
+async def upload_to_s3(file: UploadFile, object_prefix: str,) -> str:
     try:
         filename = file.filename
         if not filename:
@@ -46,7 +46,7 @@ async def upload_to_s3(file: UploadFile, user_id: int) -> str:
             )
 
         # s3_object_key, it will save in db like users/1/c2b0d5b8-f5aa-49f7-a52d-3f0cf2fef8c6.png
-        object_key = f"users/{user_id}/{filename}"
+        object_key = f"{object_prefix}/{filename}"
         logger.info("s3 object_key: %s", object_key)
 
         CONTENT_TYPE_MAPPING = {
