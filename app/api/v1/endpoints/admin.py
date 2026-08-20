@@ -5,12 +5,19 @@ from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.database import get_db
+from app.models.products import Product
 from app.models.user import User
+from app.schemas.products import (
+    AdminProductCreateRequest,
+    AdminProductCreateResponse,
+    AdminProductsResponse,
+)
 from app.schemas.user import (
     UserActionStatusRequest,
     UserActionStatusResponse,
     UserResponse,
 )
+from app.utils.logger import logger
 
 router = APIRouter()
 
@@ -70,9 +77,6 @@ async def deactivate_user(request: UserActionStatusRequest, db: Annotated[AsyncS
         message = "User account successfully deactivated",
         user = user
     )
-
-    await db.commit()
-
     return response
 
 
@@ -96,6 +100,26 @@ async def activate_user(request: UserActionStatusRequest, db: Annotated[AsyncSes
         user = user
     )
 
-    await db.commit()
-
     return response
+
+
+@router.post("/add_product", response_model= AdminProductCreateResponse)
+async def create_product(payload: AdminProductCreateRequest, db: Annotated[AsyncSession, Depends(get_db)]):
+    try:
+        product = Product(
+            title= payload.title,
+            description= payload.description,
+            image_url= payload.image_url,
+            price= payload.price,
+            in_stock= payload.in_stock,
+            stock_quantity= payload.stock_quantity
+        )
+        db.add(product)
+        response = AdminProductCreateResponse(
+            message= "Product created successfully",
+            product= product
+        )
+        return response
+    except Exception:
+        logger.exception("Failed to create product..")
+        raise

@@ -25,6 +25,13 @@ class Settings(BaseSettings):
     # _Resend
     resend_api_key: SecretStr
 
+    # _Mailtrap
+    mailtrap_host: str
+    mailtrap_port: int
+    mailtrap_username: str
+    mailtrap_password: str
+    mail_from: str
+
     # _AWS
     aws_access_key_id: SecretStr | None = None
     aws_secret_access_key: SecretStr | None = None
