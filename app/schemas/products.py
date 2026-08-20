@@ -1,4 +1,5 @@
 from pydantic import BaseModel, ConfigDict, Field
+from datetime import datetime
 
 
 class AdminProductCreateRequest(BaseModel):
@@ -20,6 +21,7 @@ class ProductResponse(BaseModel):
     price: int
     in_stock: bool
     stock_quantity: int
+    created_at: datetime
 
 
 class AdminProductCreateResponse(BaseModel):
@@ -29,4 +31,4 @@ class AdminProductCreateResponse(BaseModel):
 
 class AdminProductsResponse(BaseModel):
     message: str
-    product: list[ProductResponse]
+    products: list[ProductResponse]

@@ -123,3 +123,22 @@ async def create_product(payload: AdminProductCreateRequest, db: Annotated[Async
     except Exception:
         logger.exception("Failed to create product..")
         raise
+
+
+@router.get("/products", response_model= AdminProductsResponse)
+async def get_products(db: Annotated[AsyncSession, Depends(get_db)], search: str | None = None):
+
+    query = select(Product)
+
+    if search:
+        query = query.where(Product.title.ilike(f"%{search}%"))
+
+    result = await db.execute(query)
+    products = result.scalars().all()
+
+    response = AdminProductsResponse(
+        message= "Products fetched successfully",
+        products= products
+    )
+
+    return response
