@@ -97,3 +97,23 @@ def generate_signed_url(object_key: str | None) -> str | None:
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to generate image URL",
         )
+
+
+def delete_from_s3(object_key: str | None) -> str | None:
+    try:
+        if not object_key:
+            return None
+
+        s3_client.delete_object(
+            Bucket= bucket_name,
+            key=object_key
+        )
+        logger.info(
+            "S3 object deleted successfully: %s",
+            object_key,
+        )
+    except ClientError:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to delete image",
+        )

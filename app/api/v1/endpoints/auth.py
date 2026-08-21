@@ -79,7 +79,7 @@ async def verify_otp(
         )
 
     user.last_login = datetime.now(UTC)
-    await db.commit()
+    await db.flush()
     await db.refresh(user)
 
     # Create access and refresh token and set it to HttpOnly cookie for security and industry purpose

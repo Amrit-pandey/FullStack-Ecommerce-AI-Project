@@ -1,8 +1,18 @@
-from pydantic import BaseModel, ConfigDict, Field
 from datetime import datetime
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class AdminProductCreateRequest(BaseModel):
+    title: str = Field(max_length=100, min_length=1)
+    description: str = Field(max_length=250, min_length=1)
+    image_url: str | None = None
+    price: int
+    in_stock: bool
+    stock_quantity: int
+
+
+class AdminProductUpdateRequest(BaseModel):
     title: str = Field(max_length=100, min_length=1)
     description: str = Field(max_length=250, min_length=1)
     image_url: str | None = None
@@ -32,3 +42,13 @@ class AdminProductCreateResponse(BaseModel):
 class AdminProductsResponse(BaseModel):
     message: str
     products: list[ProductResponse]
+
+
+class AdminProductUpdateResponse(BaseModel):
+    message: str
+    product: ProductResponse
+
+
+class AdminProductDeleteResponse(BaseModel):
+    message: str
+    product_id: int
